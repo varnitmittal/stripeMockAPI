@@ -9,7 +9,6 @@ const mockData = {
     customer: "cus_mock_123456",
     description: "Mock Stripe payment"
   },
-
   201: {
     id: "cus_mock_123456",
     object: "customer",
@@ -17,7 +16,6 @@ const mockData = {
     name: "Mock Customer",
     created: 1723632000
   },
-
   400: {
     error: {
       type: "invalid_request_error",
@@ -25,7 +23,6 @@ const mockData = {
       message: "Mock Stripe: required parameter is missing."
     }
   },
-
   401: {
     error: {
       type: "authentication_error",
@@ -33,21 +30,18 @@ const mockData = {
       message: "Mock Stripe: authentication failed."
     }
   },
-
   403: {
     error: {
       type: "permission_error",
       message: "Mock Stripe: permission denied."
     }
   },
-
   404: {
     error: {
       type: "invalid_request_error",
       message: "Mock Stripe: resource not found."
     }
   },
-
   429: {
     error: {
       type: "rate_limit_error",
@@ -55,28 +49,24 @@ const mockData = {
       retry_after: 60
     }
   },
-
   500: {
     error: {
       type: "api_error",
       message: "Mock Stripe: internal server error."
     }
   },
-
   502: {
     error: {
       type: "api_error",
       message: "Mock Stripe: bad gateway."
     }
   },
-
   503: {
     error: {
       type: "api_error",
       message: "Mock Stripe: service unavailable."
     }
   },
-
   504: {
     error: {
       type: "api_error",
@@ -88,29 +78,6 @@ const mockData = {
 export default async (req) => {
   const url = new URL(req.url);
 
-  const clientId = url.searchParams.get("client_id");
-  const clientSecret = url.searchParams.get("client_secret");
-
-  const expectedClientId = process.env.MOCK_STRIPE_CLIENT_ID;
-  const expectedClientSecret = process.env.MOCK_STRIPE_CLIENT_SECRET;
-
-  // Authentication
-  if (
-    clientId !== expectedClientId ||
-    clientSecret !== expectedClientSecret
-  ) {
-    return Response.json(
-      {
-        error: {
-          type: "authentication_error",
-          message: "Invalid client_id or client_secret."
-        }
-      },
-      { status: 401 }
-    );
-  }
-
-  // Requested HTTP status code
   const requestedCode = Number(url.searchParams.get("code") || "200");
 
   if (!Number.isInteger(requestedCode) || requestedCode < 100 || requestedCode > 599) {
@@ -125,10 +92,8 @@ export default async (req) => {
     );
   }
 
-  // Use predefined Stripe-like data where available
   let responseData = mockData[requestedCode];
 
-  // Generic response for any other requested status
   if (!responseData) {
     responseData = {
       id: "mock_response_123456",
